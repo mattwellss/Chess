@@ -1,0 +1,55 @@
+/* chess style */
+
+.piece:after {
+  font-size: 4em;  
+  display: block;
+  text-align: center;
+}
+.White {
+  color: #fff;
+  text-shadow: 0 0 3px #000;
+}
+.Black {
+  color: #000;
+  text-shadow: 0 0 3px #fff;
+}
+.King:after {
+  content: '♚'
+}
+.Queen:after {
+  content: '♛'
+}
+.Rook:after {
+  content: '♜'
+}
+.Knight:after {
+  content: '♞'
+}
+.Bishop:after {
+  content: '♝'
+}
+.Pawn:after {
+  content: '♟'
+}
+
+#board div:nth-child(even) > .square:nth-child(odd),
+#board div:nth-child(odd) > .square:nth-child(even) {
+  background-color: #333;
+  /*color: #eee;*/
+}
+.square {
+  width: 5em;
+  height: 5em;
+  padding : 5px;
+  float: left;
+
+  color: #666;
+  background-color: #eee;
+}
+.square.target {
+  border: 3px solid #e00;
+  padding: 2px;
+}
+.square:nth-child(8n + 1) {
+  clear: left;
+}
