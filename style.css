@@ -1,17 +1,59 @@
 /* chess style */
-
+* {
+  margin: 0;
+  padding: 0;
+}
+html, body {
+  height: 100%;
+}
+body {
+  font-family: "Helvetica neue", arial, sans-serif;
+  max-height: 100%;
+}
+.content {
+  height: 100%;
+  min-height: 100%;
+}
+#messages dt {
+  float: left;
+  clear: left;
+  margin: 3px 3px;
+}
+#messages dt,
+#messages dd {
+  padding: 3px;
+  margin: 3px 3px;
+  float: left;
+}
+#messages dt {
+  border-radius: 4px;
+  padding: 2px;
+}
+#messages dt.Message {
+  background-color: #99f;
+  border: 1px solid #00f;
+  content: #005;
+}
+#messages dt.Error {
+  background-color: #f99;
+  border: 1px solid #f00;
+  color : #500;
+}
+/* Display of Chess pieces */
 .piece:after {
-  font-size: 4em;  
+  line-height: 1em;
   display: block;
+  width: 100%;
+  height: 100%;
   text-align: center;
 }
 .White {
   color: #fff;
-  text-shadow: 0 0 3px #000;
+  text-shadow: 0 0 2px #000;
 }
 .Black {
   color: #000;
-  text-shadow: 0 0 3px #fff;
+  text-shadow: 0 0 1px #fff;
 }
 .King:after {
   content: '♚'
@@ -31,24 +73,80 @@
 .Pawn:after {
   content: '♟'
 }
+/* Board and square display */
+#board {
+  margin: 0 auto;
+}
+#messages {
+  margin: 0 auto;
+  height: 100%;
+}
+.row {
+  float: left;
+  margin: 0 auto;
+}
+@media screen and (min-width: 768px) {
+  #messages {
+    width: 768px;
+  }
+  .row {
+    width: 768px;
+    height: 96px;
+  }
+  .piece {
+    font-size: 80px;
+  }
+}
+@media screen and (min-width: 500px) and (max-width: 767px) {
+  #messages {
+    width : 500px;
+  }
+  .row {
+    width: 500px;
+    height: 62.5px;
+  }
+  .piece {
+    font-size: 50px;
+  }
+}
+@media screen and (max-width: 499px) {
+  #messages {
+    width: 320px;
+  }
+  .row {
+    width: 320px;
+    height: 40px;
+  }
+  .piece {
+    font-size: 36px;
+  }
+}
 
 #board div:nth-child(even) > .square:nth-child(odd),
 #board div:nth-child(odd) > .square:nth-child(even) {
-  background-color: #333;
+  background-color: #222;
   /*color: #eee;*/
 }
+.piece {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+.square.target .piece {
+  border: 3px solid #e00;
+}
+.square.target .piece:after {
+  margin-top: -3px;
+}
 .square {
-  width: 5em;
-  height: 5em;
-  padding : 5px;
+  width: 12.5%;
+  height: 100%;
   float: left;
-
+  position: relative;
   color: #666;
   background-color: #eee;
-}
-.square.target {
-  border: 3px solid #e00;
-  padding: 2px;
 }
 .square:nth-child(8n + 1) {
   clear: left;

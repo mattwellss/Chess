@@ -7,6 +7,7 @@
 //    Object.create
 //
 var Class = (Class || {});
+function sendMessage () {}
 Number.prototype.inRange = function (bottom, top, b_include, t_include) {
   return this > bottom - (b_include || 0) && this < top + (t_include || 0);
 };
@@ -40,9 +41,12 @@ var Chess = (function () {
       var dX = position[0] - currentPosition[0];
       var dY = position[1] - currentPosition[1];
 
+      // check if the move is legal according to piece's own rules
       if (piece.move(dX, dY) == false) {
         throw new IllegalMoveException(piece);
       }
+
+      // walk the path that the piece will take, check for collisions
       var dirX = dX / (Math.abs(dX) || 1);
       var dirY = dY / (Math.abs(dY) || 1);
       while (dX || dY) {
@@ -54,7 +58,7 @@ var Chess = (function () {
       }
       piece.position = unTranslatePosition(position);
       piece.movesTaken += 1;
-      console.log("Moved " + piece.toString() + " to " + piece.position);
+      sendMessage("Moved " + piece.toString() + " to " + piece.position);
 
       board[currentPosition[0]][currentPosition[1]].occupiedBy = null;
       setPiece(piece);
@@ -86,6 +90,8 @@ var Chess = (function () {
 
     return {
       board: board,
+      translatePosition: translatePosition,
+      unTranslatePosition: unTranslatePosition,
       movePiece: movePiece,
       setPiece: setPiece
     };
@@ -119,10 +125,11 @@ var Chess = (function () {
   Pawn.prototype = Object.create(Piece.prototype);
   Class.extend(Pawn, {
     // _PARENT: Piece,
+    forward: null,
     move: function (h, v) {
       // h MUST be 1 unless movesTaken is 0
       try {
-        return Math.abs(v).inRange(0, 1 + (this.movesTaken == 0 || 0), false, true) &&
+        return (this.forward * v).inRange(0, 1 + (this.movesTaken == 0 || 0), false, true) &&
         !h;
       } catch (ex) {
         return false;
@@ -131,6 +138,11 @@ var Chess = (function () {
     attack: function (h, v) {
       // must be colliding...
       return false;
+    },
+    init: function (team, position, id, name) {
+      this.forward = Board.translatePosition(position)[1] > 2?
+        -1: 1;
+      this._super(team, position, id, name);
     },
     type: "Pawn"
   });
@@ -180,8 +192,7 @@ var Chess = (function () {
   Queen.prototype = Object.create(Piece.prototype);
   Class.extend(Queen, {
     move: function (h, v) {
-      return ((h + v !== 0)  && (h * v == 0)) || // horizontal
-        (h == v !== 0); // diagonal
+      return Bishop.prototype.move(h, v) || Rook.prototype.move(h, v);
     },
     attack: function (h, v) {
       return this.move(h, v);
@@ -193,6 +204,8 @@ var Chess = (function () {
   King.prototype = Object.create(Piece.prototype);
   Class.extend(King, {
     move: function (h, v) {
+      h = Math.abs(h);
+      v = Math.abs(v);
       return (h + v).inRange(0, 3) && Math.abs(h - v) < 2;
     },
     attack: function (h, v) {
@@ -257,7 +270,6 @@ var Chess = (function () {
               team.color + "'s " + p;
             piece.init(team.color, position, id, name);
             Board.setPiece(piece);
-            console.log(piece);
             Pieces[piece.id] = piece;
             team.pieces.push(piece.id);
           }
