@@ -46,6 +46,11 @@ var Chess = (function () {
         throw new IllegalMoveException(piece);
       }
 
+      // check destination before the rest of the path (IE Knights!)
+      if (board[position[0]][position[1]].occupiedBy) {
+        throw new PositionOccupiedException(piece);
+      }
+      
       // walk the path that the piece will take, check for collisions
       var dirX = dX / (Math.abs(dX) || 1);
       var dirY = dY / (Math.abs(dY) || 1);
